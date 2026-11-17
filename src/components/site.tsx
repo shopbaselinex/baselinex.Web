@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { BadgeCheck, Heart, MapPin, Truck, Search } from "lucide-react";
 import { sellerById, type Product } from "@/lib/data";
+import { useAuth } from "@/lib/auth";
 
 export function Header() {
   return (
@@ -21,8 +22,39 @@ export function Header() {
           <Search className="size-4" /> Search racquets, paddles…
         </Link>
         <Link to="/sell" className="ml-auto rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground lg:ml-0">Sell</Link>
+        <AccountLink />
       </div>
     </header>
+  );
+}
+
+function AccountLink() {
+  const { user, loading } = useAuth();
+  // Same placeholder on the server and during the first browser render, so hydration matches.
+  if (loading) return <span className="size-9" aria-hidden />;
+  if (!user) {
+    return (
+      <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+        Sign in
+      </Link>
+    );
+  }
+  const name = (user.user_metadata?.["full_name"] as string | undefined) || user.email || "Account";
+  const initials = name
+    .split(/[\s@.]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]!.toUpperCase())
+    .join("");
+  return (
+    <Link
+      to="/account"
+      title={name}
+      aria-label="Your account"
+      className="flex size-9 items-center justify-center rounded-full bg-accent font-display text-xs font-bold"
+    >
+      {initials}
+    </Link>
   );
 }
 

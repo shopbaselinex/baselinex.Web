@@ -10,12 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as CoachesRouteImport } from './routes/coaches'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LocalRouteImport } from './routes/local'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as SellRouteImport } from './routes/sell'
 import { Route as SellersRouteImport } from './routes/sellers'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as ItemIdRouteImport } from './routes/item.$id'
 import { Route as PlayIndexRouteImport } from './routes/play.index'
 import { Route as PlayIdRouteImport } from './routes/play.$id'
@@ -25,6 +29,11 @@ import { Route as SellerIdRouteImport } from './routes/seller.$id'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoachesRoute = CoachesRouteImport.update({
@@ -42,6 +51,11 @@ const LocalRoute = LocalRouteImport.update({
   path: '/local',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SellRoute = SellRouteImport.update({
   id: '/sell',
   path: '/sell',
@@ -55,6 +69,16 @@ const SellersRoute = SellersRouteImport.update({
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ItemIdRoute = ItemIdRouteImport.update({
@@ -85,12 +109,16 @@ const SellerIdRoute = SellerIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/coaches': typeof CoachesRoute
   '/dashboard': typeof DashboardRoute
   '/local': typeof LocalRoute
+  '/login': typeof LoginRoute
   '/sell': typeof SellRoute
   '/sellers': typeof SellersRoute
   '/shop': typeof ShopRoute
+  '/signup': typeof SignupRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/item/$id': typeof ItemIdRoute
   '/play/$id': typeof PlayIdRoute
   '/play/partners': typeof PlayPartnersRoute
@@ -99,12 +127,16 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/coaches': typeof CoachesRoute
   '/dashboard': typeof DashboardRoute
   '/local': typeof LocalRoute
+  '/login': typeof LoginRoute
   '/sell': typeof SellRoute
   '/sellers': typeof SellersRoute
   '/shop': typeof ShopRoute
+  '/signup': typeof SignupRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/item/$id': typeof ItemIdRoute
   '/play/$id': typeof PlayIdRoute
   '/play/partners': typeof PlayPartnersRoute
@@ -114,12 +146,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/coaches': typeof CoachesRoute
   '/dashboard': typeof DashboardRoute
   '/local': typeof LocalRoute
+  '/login': typeof LoginRoute
   '/sell': typeof SellRoute
   '/sellers': typeof SellersRoute
   '/shop': typeof ShopRoute
+  '/signup': typeof SignupRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/item/$id': typeof ItemIdRoute
   '/play/$id': typeof PlayIdRoute
   '/play/partners': typeof PlayPartnersRoute
@@ -130,12 +166,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
     | '/coaches'
     | '/dashboard'
     | '/local'
+    | '/login'
     | '/sell'
     | '/sellers'
     | '/shop'
+    | '/signup'
+    | '/auth/callback'
     | '/item/$id'
     | '/play/$id'
     | '/play/partners'
@@ -144,12 +184,16 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account'
     | '/coaches'
     | '/dashboard'
     | '/local'
+    | '/login'
     | '/sell'
     | '/sellers'
     | '/shop'
+    | '/signup'
+    | '/auth/callback'
     | '/item/$id'
     | '/play/$id'
     | '/play/partners'
@@ -158,12 +202,16 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/account'
     | '/coaches'
     | '/dashboard'
     | '/local'
+    | '/login'
     | '/sell'
     | '/sellers'
     | '/shop'
+    | '/signup'
+    | '/auth/callback'
     | '/item/$id'
     | '/play/$id'
     | '/play/partners'
@@ -173,12 +221,16 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
   CoachesRoute: typeof CoachesRoute
   DashboardRoute: typeof DashboardRoute
   LocalRoute: typeof LocalRoute
+  LoginRoute: typeof LoginRoute
   SellRoute: typeof SellRoute
   SellersRoute: typeof SellersRoute
   ShopRoute: typeof ShopRoute
+  SignupRoute: typeof SignupRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   ItemIdRoute: typeof ItemIdRoute
   PlayIdRoute: typeof PlayIdRoute
   PlayPartnersRoute: typeof PlayPartnersRoute
@@ -193,6 +245,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/coaches': {
@@ -216,6 +275,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sell': {
       id: '/sell'
       path: '/sell'
@@ -235,6 +301,20 @@ declare module '@tanstack/react-router' {
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/item/$id': {
@@ -277,12 +357,16 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
   CoachesRoute: CoachesRoute,
   DashboardRoute: DashboardRoute,
   LocalRoute: LocalRoute,
+  LoginRoute: LoginRoute,
   SellRoute: SellRoute,
   SellersRoute: SellersRoute,
   ShopRoute: ShopRoute,
+  SignupRoute: SignupRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   ItemIdRoute: ItemIdRoute,
   PlayIdRoute: PlayIdRoute,
   PlayPartnersRoute: PlayPartnersRoute,
