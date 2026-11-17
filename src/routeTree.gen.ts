@@ -15,6 +15,7 @@ import { Route as CoachesRouteImport } from './routes/coaches'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LocalRouteImport } from './routes/local'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as OnboardRouteImport } from './routes/onboard'
 import { Route as SellRouteImport } from './routes/sell'
 import { Route as SellersRouteImport } from './routes/sellers'
 import { Route as ShopRouteImport } from './routes/shop'
@@ -54,6 +55,11 @@ const LocalRoute = LocalRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardRoute = OnboardRouteImport.update({
+  id: '/onboard',
+  path: '/onboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SellRoute = SellRouteImport.update({
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/local': typeof LocalRoute
   '/login': typeof LoginRoute
+  '/onboard': typeof OnboardRoute
   '/sell': typeof SellRoute
   '/sellers': typeof SellersRoute
   '/shop': typeof ShopRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/local': typeof LocalRoute
   '/login': typeof LoginRoute
+  '/onboard': typeof OnboardRoute
   '/sell': typeof SellRoute
   '/sellers': typeof SellersRoute
   '/shop': typeof ShopRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/local': typeof LocalRoute
   '/login': typeof LoginRoute
+  '/onboard': typeof OnboardRoute
   '/sell': typeof SellRoute
   '/sellers': typeof SellersRoute
   '/shop': typeof ShopRoute
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/local'
     | '/login'
+    | '/onboard'
     | '/sell'
     | '/sellers'
     | '/shop'
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/local'
     | '/login'
+    | '/onboard'
     | '/sell'
     | '/sellers'
     | '/shop'
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/local'
     | '/login'
+    | '/onboard'
     | '/sell'
     | '/sellers'
     | '/shop'
@@ -226,6 +238,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LocalRoute: typeof LocalRoute
   LoginRoute: typeof LoginRoute
+  OnboardRoute: typeof OnboardRoute
   SellRoute: typeof SellRoute
   SellersRoute: typeof SellersRoute
   ShopRoute: typeof ShopRoute
@@ -280,6 +293,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboard': {
+      id: '/onboard'
+      path: '/onboard'
+      fullPath: '/onboard'
+      preLoaderRoute: typeof OnboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sell': {
@@ -362,6 +382,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LocalRoute: LocalRoute,
   LoginRoute: LoginRoute,
+  OnboardRoute: OnboardRoute,
   SellRoute: SellRoute,
   SellersRoute: SellersRoute,
   ShopRoute: ShopRoute,

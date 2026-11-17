@@ -16,8 +16,9 @@ function AuthCallback() {
   const { session, loading } = useAuth();
   const router = useRouter();
 
+  // /onboard saves the signup fields, or moves straight on if the profile is already complete.
   useEffect(() => {
-    if (session) router.history.replace("/account");
+    if (session) router.history.replace("/onboard");
   }, [session, router]);
 
   if (loading || session) {

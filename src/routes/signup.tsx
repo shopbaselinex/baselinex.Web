@@ -1,10 +1,12 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { Mail } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import { AuthCard, FormError, SupabaseNotConfigured } from "@/components/auth-card";
+import { Field, GenderField, LocationFields, TextInput } from "@/components/profile-fields";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { signupMetadata } from "@/lib/profile";
+import type { Gender } from "@/lib/profile-options";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/signup")({
@@ -22,7 +24,8 @@ function SignupPage() {
     e.preventDefault();
     if (!supabase) return;
     const form = new FormData(e.currentTarget);
-    const email = String(form.get("email"));
+    const text = (name: string) => String(form.get(name) ?? "").trim() || null;
+    const email = text("email") ?? "";
 
     setSubmitting(true);
     setError(null);
@@ -30,8 +33,15 @@ function SignupPage() {
       email,
       password: String(form.get("password")),
       options: {
-        // Stored in Supabase user_metadata → the API uses it as the profile's display name.
-        data: { full_name: String(form.get("fullName")).trim() },
+        // Kept in Supabase user_metadata until the email is confirmed. Then /onboard sends it to
+        // the API (PUT /me), which validates it and saves the profile.
+        data: signupMetadata({
+          firstName: text("firstName"),
+          lastName: text("lastName"),
+          country: text("country"),
+          state: text("state"),
+          gender: text("gender") as Gender | null,
+        }),
         // Where the confirmation email link lands.
         emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
@@ -39,53 +49,118 @@ function SignupPage() {
     setSubmitting(false);
 
     if (error) return setError(error.message);
-    // "Confirm email" off in Supabase → we get a session right away.
-    if (data.session) return router.history.push("/account");
+    // "Confirm email" off in Supabase → signed in right away.
+    if (data.session) return router.history.push("/onboard");
     // "Confirm email" on → no session until the user clicks the link in the email.
     setCheckEmail(email);
   }
 
   if (checkEmail) {
     return (
-      <AuthCard title="Check your email">
-        <p className="text-sm">
-          We sent a confirmation link to <strong>{checkEmail}</strong>. Open it to finish creating
-          your account.
-        </p>
+      <AuthCard eyebrow="Almost there" title="Check your email">
+        <div className="flex flex-col items-center text-center">
+          <div className="flex size-14 items-center justify-center rounded-full bg-optic text-optic-foreground">
+            <Mail className="size-6" />
+          </div>
+          <p className="mt-5 text-sm leading-relaxed">
+            We sent a confirmation link to <strong>{checkEmail}</strong>. Open it to finish creating
+            your account. You'll come straight back here.
+          </p>
+          <button
+            type="button"
+            onClick={() => setCheckEmail(null)}
+            className="mt-6 text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            Used the wrong email? Start over
+          </button>
+        </div>
       </AuthCard>
     );
   }
 
   return (
-    <AuthCard title="Create your account" subtitle="Buy, sell and book racquet-sport sessions.">
+    <AuthCard
+      wide
+      eyebrow="Join BaselineX"
+      title="Create your account"
+      subtitle="Buy and sell racquet-sport gear, and book sessions near you."
+    >
       {!supabase ? (
         <SupabaseNotConfigured />
       ) : (
         <form onSubmit={onSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="fullName">Full name</Label>
-            <Input id="fullName" name="fullName" autoComplete="name" required maxLength={120} />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field id="firstName" label="First name" hideLabel>
+              <TextInput
+                id="firstName"
+                name="firstName"
+                placeholder="First name"
+                autoComplete="given-name"
+                required
+                maxLength={100}
+              />
+            </Field>
+            <Field id="lastName" label="Last name" hideLabel>
+              <TextInput
+                id="lastName"
+                name="lastName"
+                placeholder="Last name"
+                autoComplete="family-name"
+                required
+                maxLength={100}
+              />
+            </Field>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" autoComplete="email" required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
+
+          <Field id="email" label="Email" hideLabel>
+            <TextInput
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Email"
+              autoComplete="email"
+              required
+            />
+          </Field>
+
+          <Field id="password" label="Password" hint="At least 8 characters." hideLabel>
+            <TextInput
               id="password"
               name="password"
               type="password"
+              placeholder="Password"
               autoComplete="new-password"
               required
               minLength={8}
+              aria-describedby="password-hint"
             />
-            <p className="text-xs text-muted-foreground">At least 8 characters.</p>
-          </div>
+          </Field>
+
+          <GenderField
+            gender={null}
+            required
+            hideLabel
+            hint="Private. It's never shown on your profile."
+          />
+
+          <LocationFields
+            state={null}
+            required
+            hideLabels
+            countryHint="BaselineX is only available in the United States for now."
+          />
+
           <FormError message={error} />
-          <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? "Creating account…" : "Create account"}
-          </Button>
+
+          <div className="border-t pt-6">
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="h-12 w-full rounded-full text-base font-semibold"
+            >
+              {submitting ? "Creating account…" : "Create account"}
+            </Button>
+          </div>
         </form>
       )}
       <p className="mt-6 text-center text-sm text-muted-foreground">
